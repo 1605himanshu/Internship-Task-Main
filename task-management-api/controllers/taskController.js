@@ -28,3 +28,24 @@ exports.getTasks = async (req, res) => {
         res.status(500).json({ message: "Error fetching tasks" });
     }
 };
+exports.updateTask = async (req, res) => {
+    try {
+        const { taskId } = req.params;
+        const { status, priority } = req.body;
+
+        const updatedTask = await Task.findByIdAndUpdate(
+            taskId,
+            { status, priority },
+            { new: true }
+        );
+
+        if (!updatedTask) {
+            return res.status(404).json({ message: "Task not found" });
+        }
+
+        res.json({ message: "Task updated successfully", task: updatedTask });
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error", error });
+    }
+};
+
